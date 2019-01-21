@@ -1,6 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+""" Calculates the average number of coins you would need to generate amounts up to `up_to_amount`, using representative
+baskets from `ons_data/baskets2.txt`. Also generates the average weight of these coins (actual weight, like in kilograms!)
+if you provide the `weights` as well.
+"""
 from __future__ import division
+
 
 def get_min_coins(coins, target_amount, weights=0):
     # Returns an array X = [0,1,1,...] of length target_amount,
@@ -14,31 +19,31 @@ def get_min_coins(coins, target_amount, weights=0):
     for c in range(n):
         for target in range(coins[c], target_amount + 1):
             if min_coins[target - coins[c]] + 1 < min_coins[target]:
-                min_coins_desc[target] = min_coins_desc[target - coins[c]] + 10**(n-c-1)
-            #min_coins_desc[target] = min(min_coins_desc[target - coins[c]] + 10**(n-c), min_coins_desc[target])
+                min_coins_desc[target] = min_coins_desc[target - coins[c]] + 10**(n - c - 1)
             min_coins[target] = min(min_coins[target - coins[c]] + 1, min_coins[target])
             min_coins_weight[target] = min(min_coins_weight[target - coins[c]] + weights[c], min_coins_weight[target])
-    for target in range(target_amount+1):
+    for target in range(target_amount + 1):
         min_coins_desc[target] = str(min_coins_desc[target]).zfill(n)
     return min_coins, min_coins_desc, min_coins_weight
+
 
 # BASKETS ------------------------------------------------
 basket_sizes = []
 basket_prices = []
 with open("ons_data/baskets2.txt", "r") as f:
     for line in f:
-      line_split =  line.split(',')
-      basket_sizes.append(int(line_split[0]))
-      basket_prices.append(int(line_split[1]))
+        line_split = line.split(',')
+        basket_sizes.append(int(line_split[0]))
+        basket_prices.append(int(line_split[1]))
 
 prices_less_than = 2000
 basket_prices_we_want = [basket_prices[i] for i in xrange(len(basket_prices)) if basket_prices[i] < prices_less_than]
 lowest_banknote = 500
 lowest_coin = 1
-ends_in = range(0,lowest_banknote,lowest_coin)
-prices_mod_lowest_banknote = [i%lowest_banknote for i in basket_prices_we_want]
-prices_end_in_count = [ sum(1 for i in prices_mod_lowest_banknote if i==j) for j in ends_in]
-prices_end_in_count_as_percent = [i/sum(prices_end_in_count)*100 for i in prices_end_in_count]
+ends_in = range(0, lowest_banknote, lowest_coin)
+prices_mod_lowest_banknote = [i % lowest_banknote for i in basket_prices_we_want]
+prices_end_in_count = [sum(1 for i in prices_mod_lowest_banknote if i == j) for j in ends_in]
+prices_end_in_count_as_percent = [i / sum(prices_end_in_count) * 100 for i in prices_end_in_count]
 # END BASKETS ---------------------------------------------
 '''
 name = "UK"
@@ -46,8 +51,7 @@ up_to_amount = 499
 coins = [1,2,5,10,20,50,100,200]
 weights = [3.56,7.12,3.25,6.5,5,8,9.5,12]
 weightings_for_each_amount = prices_end_in_count_as_percent
-'''
-'''
+
 name = "UK self-service"
 up_to_amount = 499
 coins = [1,2,5,20,100,200]
@@ -55,15 +59,15 @@ weights = [3.56,7.12,3.25,5,9.5,12]
 weightings_for_each_amount = prices_end_in_count_as_percent
 '''
 name = "UK no 1p or 2p"
-up_to_amount = 499//5
-coins = [5//5,10//5,20//5,50//5,100//5,200//5]
-weights = [3.25,6.5,5,8,9.5,12]
+up_to_amount = 499 // 5
+coins = [5 // 5, 10 // 5, 20 // 5, 50 // 5, 100 // 5, 200 // 5]
+weights = [3.25, 6.5, 5, 8, 9.5, 12]
 weightings_for_each_amount = prices_end_in_count_as_percent
 weightings_for_each_amount = [0 for i in range(100)]
-weightings_for_each_amount[0] = (sum(prices_end_in_count_as_percent[0:3]) + sum(prices_end_in_count_as_percent[498:500]) )/5
-
-for i in range(1,100):
-    weightings_for_each_amount[i] = sum(prices_end_in_count_as_percent[5*i-2:5*i+3])/5
+weightings_for_each_amount[0] = (sum(prices_end_in_count_as_percent[0:3]) + sum(prices_end_in_count_as_percent[498:500])) / 5
+for i in range(1, 100):
+    # Swedish rounding (i.e. prices of baskets would be rounded to the nearest 5p)
+    weightings_for_each_amount[i] = sum(prices_end_in_count_as_percent[5 * i - 2:5 * i + 3]) / 5
 
 '''
 name = "UK 1960"
@@ -175,14 +179,12 @@ name = "Brazil"
 up_to_amount = 195/5
 coins = [5/5,10/5,25/5,50/5,100/5]
 weights = [4.1,4.8,7.55,7.81,7]
-'''
-'''
+
 name = "South Africa"
 up_to_amount = 990/10
 coins = [10/10,20/10,50/10,100/10,200/10,500/10]
 weights = [2,3.5,5,4,5.5,9.5]
-'''
-'''
+
 name = "UK with £1.33"
 up_to_amount = 499
 coins = [1,2,5,10,20,50,100,133,200]
@@ -208,8 +210,7 @@ up_to_amount = 495/5
 coins = [5/5,10/5,20/5,50/5,100/5,200/5]
 weights = [3.25,6.5,5,8,9.5,12]
 #coins = [1,2,1*4,3*4,6*4,12*4,24*4,30*4]
-'''
-'''
+
 name = "UK with 25p instead of 20p"
 up_to_amount = 499
 coins = [1,2,5,10,25,50,100,200]
@@ -218,18 +219,15 @@ weights = [3.56,7.12,3.25,6.5,5,8,9.5,12]
 print name
 print "Lowest note: ", up_to_amount + 1
 print "Coins: ", coins
-print "Average number of coins required: ", round(sum(get_min_coins(coins,up_to_amount)[0])/float(up_to_amount),2)
-print "Average weight of coins required: ", round(sum(get_min_coins(coins,up_to_amount,weights)[2])/float(up_to_amount),1), "g"
+print "Average number of coins required: ", round(sum(get_min_coins(coins, up_to_amount)[0]) / float(up_to_amount), 2)
+print "Average weight of coins required: ", round(sum(get_min_coins(coins, up_to_amount, weights)[2]) / float(up_to_amount), 1), "g"
 print "On average expect to receive X of each coin: ",
-each_coin = get_min_coins(coins,up_to_amount)[1]
-print [round(sum([float(each_coin[amount][c]) for amount in range(len(each_coin))])/float(len(each_coin)),3) for c in range(len(coins))]
+each_coin = get_min_coins(coins, up_to_amount)[1]
+print [round(sum([float(each_coin[amount][c]) for amount in range(len(each_coin))]) / float(len(each_coin)), 3) for c in range(len(coins))]
 print ""
 print "WEIGHTED by how common they are:"
-from IPython import embed
-embed()
 
-weightings_symmetric = [weightings_for_each_amount[0]] + [(weightings_for_each_amount[i] + weightings_for_each_amount[len(weightings_for_each_amount)-i])/2 for i in range(1,len(weightings_for_each_amount))]
-gmc = get_min_coins(coins,up_to_amount)[0]
-mean_weighting = (sum(weightings_symmetric)/len(weightings_symmetric))
-print "Average number of coins required: ", round(sum([gmc[i]*weightings_symmetric[i] for i in range(up_to_amount)])/float(up_to_amount)/mean_weighting,2)
-#print "Average weight of coins required: ", round(sum(get_min_coins(coins,up_to_amount,weights)[2])/float(up_to_amount),1), "g"
+weightings_symmetric = [weightings_for_each_amount[0]] + [(weightings_for_each_amount[i] + weightings_for_each_amount[len(weightings_for_each_amount) - i]) / 2 for i in range(1, len(weightings_for_each_amount))]
+gmc = get_min_coins(coins, up_to_amount)[0]
+mean_weighting = (sum(weightings_symmetric) / len(weightings_symmetric))
+print "Average number of coins required: ", round(sum([gmc[i] * weightings_symmetric[i] for i in range(up_to_amount)]) / float(up_to_amount) / mean_weighting, 2)

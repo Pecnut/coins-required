@@ -1,7 +1,15 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
+""" Calculates the average number of coins you would need to generate amounts up to `up_to_amount`, assuming that
+each amount is equally likely. Also generates the average weight of these coins (actual weight, like in kilograms!)
+if you provide the `weights` as well.
+"""
+
+
 def get_min_coins(coins, target_amount, weights=0):
     # Returns an array X = [0,1,1,...] of length target_amount,
     # where X_i tells you the number of coins you need to make i money
+    # Here, weights is actual (like in kilograms!) weight of the coins.
     if weights == 0:
         weights = [1 for i in range(len(coins))]
     min_coins = [0] + [10000] * target_amount
@@ -11,26 +19,18 @@ def get_min_coins(coins, target_amount, weights=0):
     for c in range(n):
         for target in range(coins[c], target_amount + 1):
             if min_coins[target - coins[c]] + 1 < min_coins[target]:
-                min_coins_desc[target] = min_coins_desc[target - coins[c]] + 10**(n-c-1)
-            #min_coins_desc[target] = min(min_coins_desc[target - coins[c]] + 10**(n-c), min_coins_desc[target])
+                min_coins_desc[target] = min_coins_desc[target - coins[c]] + 10**(n - c - 1)
             min_coins[target] = min(min_coins[target - coins[c]] + 1, min_coins[target])
             min_coins_weight[target] = min(min_coins_weight[target - coins[c]] + weights[c], min_coins_weight[target])
-    for target in range(target_amount+1):
+    for target in range(target_amount + 1):
         min_coins_desc[target] = str(min_coins_desc[target]).zfill(n)
     return min_coins, min_coins_desc, min_coins_weight
 
 
-
-# From Tesco API I can weight each price by how common it is (mod £5).
-# Old money (up to 479 farthings)
-# American system
-# Removing coppers
-
-
 name = "UK"
 up_to_amount = 499
-coins = [1,2,5,10,20,50,100,200]
-weights = [3.56,7.12,3.25,6.5,5,8,9.5,12]
+coins = [1, 2, 5, 10, 20, 50, 100, 200]
+weights = [3.56, 7.12, 3.25, 6.5, 5, 8, 9.5, 12]
 
 '''
 name = "UK self-service"
@@ -147,14 +147,12 @@ name = "Brazil"
 up_to_amount = 195/5
 coins = [5/5,10/5,25/5,50/5,100/5]
 weights = [4.1,4.8,7.55,7.81,7]
-'''
-'''
+
 name = "South Africa"
 up_to_amount = 990/10
 coins = [10/10,20/10,50/10,100/10,200/10,500/10]
 weights = [2,3.5,5,4,5.5,9.5]
-'''
-'''
+
 name = "UK with £1.33"
 up_to_amount = 499
 coins = [1,2,5,10,20,50,100,133,200]
@@ -180,8 +178,7 @@ up_to_amount = 495/5
 coins = [5/5,10/5,20/5,50/5,100/5,200/5]
 weights = [3.25,6.5,5,8,9.5,12]
 #coins = [1,2,1*4,3*4,6*4,12*4,24*4,30*4]
-'''
-'''
+
 name = "UK with 25p instead of 20p"
 up_to_amount = 499
 coins = [1,2,5,10,25,50,100,200]
@@ -190,8 +187,8 @@ weights = [3.56,7.12,3.25,6.5,5,8,9.5,12]
 print name
 print "Lowest note: ", up_to_amount + 1
 print "Coins: ", coins
-print "Average number of coins required: ", round(sum(get_min_coins(coins,up_to_amount)[0])/float(up_to_amount),2)
-print "Average weight of coins required: ", round(sum(get_min_coins(coins,up_to_amount,weights)[2])/float(up_to_amount),1), "g"
+print "Average number of coins required: ", round(sum(get_min_coins(coins, up_to_amount)[0]) / float(up_to_amount), 2)
+print "Average weight of coins required: ", round(sum(get_min_coins(coins, up_to_amount, weights)[2]) / float(up_to_amount), 1), "g"
 print "On average expect to receive X of each coin: ",
-each_coin = get_min_coins(coins,up_to_amount)[1]
-print [round(sum([float(each_coin[amount][c]) for amount in range(len(each_coin))])/float(len(each_coin)),3) for c in range(len(coins))]
+each_coin = get_min_coins(coins, up_to_amount)[1]
+print [round(sum([float(each_coin[amount][c]) for amount in range(len(each_coin))]) / float(len(each_coin)), 3) for c in range(len(coins))]
