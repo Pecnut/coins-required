@@ -21,14 +21,14 @@ Referenced in [*Boring Talks* \#33 - Change](https://www.bbc.co.uk/programmes/p0
 
 2. `ons_data/make_baskets.py`: Creates a set of representative shopping baskets and writes them to `baskets2.txt`. The basket is made by (i) working out how commonly an item is bought, then (ii) filling a basket of size `basket_sizes` with items which are chosen randomly but weighted on how commonly they are bought. The price of each item is itself chosen randomly from the prices it is sold at, but weighted on how common that price is.
 
-    - Part (i) is done by working out how commonly an item is bought. It does this by taking CPI weight (how much of consumer income is spent on an item type) and dividing by the average price of an item (mean of all prices this item type is sold at, weighted on how many stores each retailer has): this produces a 'number weight'. High number weights are bought more often.
+    - Part (i) is works out how commonly an item is bought. It does this by taking CPI weight (how much of consumer income is spent on an item type) and dividing by the average price of an item (mean of all prices this item type is sold at, weighted on how many stores each retailer has): this produces a 'number weight'. High number weights are bought more often.
 
 3. `ons_data/baskets_mod_something.py`: Reads in the prices of the baskets created with `make_baskets.py`, listed in `baskets2.txt`, and plots their prices mod `lowest_banknote` as a percentage of all possible prices
 
 4. `coins_required_with_baskets.py`: Calculates the average number of coins you would need to generate amounts up to `up_to_amount`, using representative baskets from `ons_data/baskets2.txt`. Also generates the average weight of these coins (actual weight, like in kilograms!) if you provide the `weights` as well.
 
 5. `coins_required_which_to_add_with_baskets.py`: Calculates the average number of coins you would need to generate amounts up to `up_to_amount`, using representative
-baskets from `ons_data/baskets2.txt`, if you add an extra coin. 
+baskets from `ons_data/baskets2.txt`, if you add an extra coin.
 
 ### Data files:
 
